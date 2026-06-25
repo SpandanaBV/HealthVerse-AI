@@ -1,0 +1,54 @@
+<app-navbar></app-navbar>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+  <h1 class="font-display text-2xl font-semibold text-ink-900">
+    Welcome, {{ authService.currentUser()?.username }}
+  </h1>
+  <p class="text-sm text-ink-600 mt-1">Here's what's happening with your care.</p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+    <a routerLink="/patient/symptom-checker" class="card p-5 hover:border-brand-300 transition group">
+      <p class="font-display font-semibold text-ink-900 group-hover:text-brand-700">AI Symptom Checker</p>
+      <p class="text-sm text-ink-600 mt-1">Describe your symptoms and get a prediction.</p>
+    </a>
+    <a routerLink="/patient/book-appointment" class="card p-5 hover:border-brand-300 transition group">
+      <p class="font-display font-semibold text-ink-900 group-hover:text-brand-700">Book Appointment</p>
+      <p class="text-sm text-ink-600 mt-1">Find a doctor and schedule a visit.</p>
+    </a>
+    <a routerLink="/patient/prescriptions" class="card p-5 hover:border-brand-300 transition group">
+      <p class="font-display font-semibold text-ink-900 group-hover:text-brand-700">Prescription History</p>
+      <p class="text-sm text-ink-600 mt-1">View prescriptions issued by your doctors.</p>
+    </a>
+  </div>
+
+  <section class="mt-10">
+    <h2 class="font-display text-lg font-semibold text-ink-900 mb-3">Your appointments</h2>
+
+    @if (loading()) {
+      <p class="text-sm text-ink-600">Loading appointments...</p>
+    } @else if (errorMessage()) {
+      <p class="text-sm text-status-cancelled">{{ errorMessage() }}</p>
+    } @else if (appointments().length === 0) {
+      <div class="card p-6 text-center text-sm text-ink-600">
+        No appointments yet. <a routerLink="/patient/book-appointment" class="text-brand-700 font-medium hover:underline">Book your first one</a>.
+      </div>
+    } @else {
+      <div class="card divide-y divide-ink-100">
+        @for (appt of appointments(); track appt.id) {
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <p class="font-medium text-ink-900">Dr. {{ appt.doctor_name }}</p>
+              <p class="text-sm text-ink-600">{{ appt.scheduled_at | date: 'medium' }}</p>
+              @if (appt.reason) {
+                <p class="text-sm text-ink-400 mt-0.5">{{ appt.reason }}</p>
+              }
+            </div>
+            <span class="text-xs font-medium px-2.5 py-1 rounded-full {{ statusClasses(appt.status) }}">
+              {{ appt.status }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</main>

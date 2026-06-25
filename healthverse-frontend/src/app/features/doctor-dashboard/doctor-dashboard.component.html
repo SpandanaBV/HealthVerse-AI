@@ -1,0 +1,80 @@
+<app-navbar></app-navbar>
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+  <h1 class="font-display text-2xl font-semibold text-ink-900">
+    Welcome, Dr. {{ authService.currentUser()?.username }}
+  </h1>
+  <p class="text-sm text-ink-600 mt-1">Manage your appointments and issue prescriptions.</p>
+
+  @if (errorMessage()) {
+    <p class="text-sm text-status-cancelled mt-3">{{ errorMessage() }}</p>
+  }
+
+  <section class="mt-6">
+    @if (loading()) {
+      <p class="text-sm text-ink-600">Loading appointments...</p>
+    } @else if (appointments().length === 0) {
+      <div class="card p-6 text-center text-sm text-ink-600">No appointments yet.</div>
+    } @else {
+      <div class="space-y-3">
+        @for (appt of appointments(); track appt.id) {
+          <div class="card p-5">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="font-display font-semibold text-ink-900">{{ appt.patient_name }}</p>
+                <p class="text-sm text-ink-600">{{ appt.scheduled_at | date: 'medium' }}</p>
+                @if (appt.reason) {
+                  <p class="text-sm text-ink-400 mt-0.5">{{ appt.reason }}</p>
+                }
+              </div>
+              <span class="text-xs font-medium px-2.5 py-1 rounded-full {{ statusClasses(appt.status) }}">
+                {{ appt.status }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2 mt-4">
+              @if (appt.status === 'PENDING') {
+                <button (click)="setStatus(appt, 'CONFIRMED')" class="btn-secondary">Confirm</button>
+                <button (click)="setStatus(appt, 'CANCELLED')" class="btn-secondary">Cancel</button>
+              }
+              @if (appt.status === 'CONFIRMED') {
+                <button (click)="setStatus(appt, 'COMPLETED')" class="btn-secondary">Mark completed</button>
+              }
+              @if (appt.status === 'COMPLETED' && !hasPrescription(appt.id)) {
+                <button (click)="openPrescriptionForm(appt.id)" class="btn-primary">Issue prescription</button>
+              }
+              @if (appt.status === 'COMPLETED' && hasPrescription(appt.id)) {
+                <span class="text-sm text-brand-700 font-medium">Prescription issued ✓</span>
+              }
+            </div>
+
+            @if (openPrescriptionFor() === appt.id) {
+              <form [formGroup]="prescriptionForm" (ngSubmit)="submitPrescription(appt.id)"
+                    class="mt-4 border-t border-ink-100 pt-4 space-y-3">
+                <div>
+                  <label class="field-label" for="diagnosis-{{ appt.id }}">Diagnosis</label>
+                  <input id="diagnosis-{{ appt.id }}" formControlName="diagnosis" type="text" class="field-input" />
+                </div>
+                <div>
+                  <label class="field-label" for="medicines-{{ appt.id }}">Medicines (comma-separated)</label>
+                  <input id="medicines-{{ appt.id }}" formControlName="medicines" type="text"
+                         placeholder="e.g. Paracetamol, Cetirizine" class="field-input" />
+                </div>
+                <div>
+                  <label class="field-label" for="notes-{{ appt.id }}">Notes (optional)</label>
+                  <textarea id="notes-{{ appt.id }}" formControlName="notes" rows="2" class="field-input"></textarea>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button type="submit" [disabled]="prescriptionForm.invalid || prescriptionSubmitting()" class="btn-primary">
+                    {{ prescriptionSubmitting() ? 'Saving...' : 'Save prescription' }}
+                  </button>
+                  <button type="button" (click)="closePrescriptionForm()" class="btn-secondary">Cancel</button>
+                </div>
+              </form>
+            }
+          </div>
+        }
+      </div>
+    }
+  </section>
+</main>

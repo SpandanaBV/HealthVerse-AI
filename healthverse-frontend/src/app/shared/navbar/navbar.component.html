@@ -1,0 +1,32 @@
+<header class="bg-white border-b border-ink-100">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-8">
+      <span class="font-display font-semibold text-brand-800 text-lg">HealthVerse AI</span>
+
+      @if (authService.role() === 'PATIENT') {
+        <nav class="hidden sm:flex items-center gap-1">
+          <a routerLink="/patient" routerLinkActive="bg-brand-50 text-brand-800" [routerLinkActiveOptions]="{ exact: true }"
+             class="px-3 py-2 rounded-lg text-sm font-medium text-ink-600 hover:bg-ink-50 transition">Dashboard</a>
+          <a routerLink="/patient/symptom-checker" routerLinkActive="bg-brand-50 text-brand-800"
+             class="px-3 py-2 rounded-lg text-sm font-medium text-ink-600 hover:bg-ink-50 transition">Symptom Checker</a>
+          <a routerLink="/patient/book-appointment" routerLinkActive="bg-brand-50 text-brand-800"
+             class="px-3 py-2 rounded-lg text-sm font-medium text-ink-600 hover:bg-ink-50 transition">Book Appointment</a>
+          <a routerLink="/patient/prescriptions" routerLinkActive="bg-brand-50 text-brand-800"
+             class="px-3 py-2 rounded-lg text-sm font-medium text-ink-600 hover:bg-ink-50 transition">Prescriptions</a>
+        </nav>
+      }
+
+      @if (authService.role() === 'DOCTOR') {
+        <nav class="hidden sm:flex items-center gap-1">
+          <a routerLink="/doctor" routerLinkActive="bg-brand-50 text-brand-800" [routerLinkActiveOptions]="{ exact: true }"
+             class="px-3 py-2 rounded-lg text-sm font-medium text-ink-600 hover:bg-ink-50 transition">Dashboard</a>
+        </nav>
+      }
+    </div>
+
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-ink-600 hidden sm:inline">{{ authService.currentUser()?.username }}</span>
+      <button (click)="logout()" class="btn-secondary">Log out</button>
+    </div>
+  </div>
+</header>

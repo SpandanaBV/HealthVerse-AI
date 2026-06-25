@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.env
+db.sqlite3
+staticfiles/
+
+# ML
+*.pkl
+
+# Angular
+node_modules/
+dist/
+.angular/
+
+# VS Code
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

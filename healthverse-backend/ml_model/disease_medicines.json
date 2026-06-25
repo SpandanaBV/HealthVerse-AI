@@ -1,0 +1,40 @@
+{
+  "Common Cold": [
+    "Paracetamol",
+    "Cetirizine",
+    "Vitamin C"
+  ],
+  "Influenza": [
+    "Oseltamivir",
+    "Paracetamol",
+    "Rest & fluids"
+  ],
+  "Migraine": [
+    "Sumatriptan",
+    "Ibuprofen",
+    "Rest in dark room"
+  ],
+  "Gastroenteritis": [
+    "Oral Rehydration Salts",
+    "Loperamide",
+    "Probiotics"
+  ],
+  "Allergic Rhinitis": [
+    "Cetirizine",
+    "Fluticasone nasal spray"
+  ],
+  "Bronchitis": [
+    "Dextromethorphan",
+    "Paracetamol",
+    "Steam inhalation"
+  ],
+  "Urinary Tract Infection": [
+    "Nitrofurantoin",
+    "Increased water intake"
+  ],
+  "Tension Headache": [
+    "Ibuprofen",
+    "Paracetamol",
+    "Stress management"
+  ]
+}

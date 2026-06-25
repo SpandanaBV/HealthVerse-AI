@@ -1,0 +1,68 @@
+<app-navbar></app-navbar>
+
+<main class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+  <h1 class="font-display text-2xl font-semibold text-ink-900">AI Symptom Checker</h1>
+  <p class="text-sm text-ink-600 mt-1">Select the symptoms you're experiencing.</p>
+
+  <div class="card p-4 mt-4 bg-amber-50 border-amber-100">
+    <p class="text-sm text-amber-900">
+      This tool gives an informational prediction only and is <strong>not a substitute for professional
+      medical advice</strong>. Please consult a doctor for an actual diagnosis, especially for severe or
+      persistent symptoms.
+    </p>
+  </div>
+
+  <div class="card p-6 mt-4">
+    <div class="flex flex-wrap gap-2">
+      @for (symptom of allSymptoms; track symptom) {
+        <button
+          type="button"
+          (click)="toggle(symptom)"
+          class="px-3 py-1.5 rounded-full text-sm font-medium border transition capitalize"
+          [class.bg-brand-700]="isSelected(symptom)"
+          [class.text-white]="isSelected(symptom)"
+          [class.border-brand-700]="isSelected(symptom)"
+          [class.bg-white]="!isSelected(symptom)"
+          [class.text-ink-700]="!isSelected(symptom)"
+          [class.border-ink-200]="!isSelected(symptom)"
+        >
+          {{ label(symptom) }}
+        </button>
+      }
+    </div>
+
+    <div class="flex items-center gap-3 mt-6">
+      <button (click)="submit()" [disabled]="selected().size === 0 || loading()" class="btn-primary">
+        {{ loading() ? 'Analyzing...' : 'Get prediction' }}
+      </button>
+      <button (click)="reset()" type="button" class="btn-secondary">Clear</button>
+      <span class="text-sm text-ink-400">{{ selected().size }} selected</span>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="text-sm text-status-cancelled mt-3">{{ errorMessage() }}</p>
+    }
+  </div>
+
+  @if (result()) {
+    <div class="card p-6 mt-4 border-brand-200">
+      <p class="text-xs font-medium text-ink-400 uppercase tracking-wide">Predicted condition</p>
+      <p class="font-display text-xl font-semibold text-ink-900 mt-1">{{ result()!.predicted_disease }}</p>
+      <p class="text-sm text-ink-600 mt-1">Confidence: {{ result()!.confidence * 100 | number: '1.0-1' }}%</p>
+
+      @if (result()!.low_confidence) {
+        <div class="mt-3 rounded-lg bg-amber-50 border border-amber-100 p-3 text-sm text-amber-900">
+          The model isn't very confident about this prediction. We'd strongly recommend booking an
+          appointment with a doctor rather than relying on this result.
+        </div>
+      }
+
+      <p class="text-xs font-medium text-ink-400 uppercase tracking-wide mt-5">Suggested medicines</p>
+      <ul class="mt-1 space-y-1">
+        @for (med of result()!.suggested_medicines; track med) {
+          <li class="text-sm text-ink-800">• {{ med }}</li>
+        }
+      </ul>
+    </div>
+  }
+</main>

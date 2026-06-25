@@ -1,0 +1,50 @@
+<app-navbar></app-navbar>
+
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+  <h1 class="font-display text-2xl font-semibold text-ink-900">Book an appointment</h1>
+  <p class="text-sm text-ink-600 mt-1">Choose a doctor and a time that works for you.</p>
+
+  <div class="card p-6 mt-6">
+    @if (loadingDoctors()) {
+      <p class="text-sm text-ink-600">Loading doctors...</p>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+        <div>
+          <label class="field-label" for="doctor">Doctor</label>
+          <select id="doctor" formControlName="doctor" class="field-input">
+            <option [ngValue]="null" disabled>Select a doctor</option>
+            @for (doc of doctors(); track doc.id) {
+              <option [ngValue]="doc.id">
+                Dr. {{ doc.user.username }} — {{ doc.specialization }}
+              </option>
+            }
+          </select>
+          @if (doctors().length === 0) {
+            <p class="text-sm text-ink-400 mt-1">No doctors are registered yet.</p>
+          }
+        </div>
+
+        <div>
+          <label class="field-label" for="scheduled_at">Date &amp; time</label>
+          <input id="scheduled_at" formControlName="scheduled_at" type="datetime-local" class="field-input" />
+        </div>
+
+        <div>
+          <label class="field-label" for="reason">Reason for visit (optional)</label>
+          <textarea id="reason" formControlName="reason" rows="3" class="field-input"></textarea>
+        </div>
+
+        @if (errorMessage()) {
+          <p class="text-sm text-status-cancelled">{{ errorMessage() }}</p>
+        }
+        @if (successMessage()) {
+          <p class="text-sm text-brand-700">{{ successMessage() }}</p>
+        }
+
+        <button type="submit" [disabled]="form.invalid || submitting()" class="btn-primary w-full">
+          {{ submitting() ? 'Booking...' : 'Book appointment' }}
+        </button>
+      </form>
+    }
+  </div>
+</main>
